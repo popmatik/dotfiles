@@ -1,0 +1,14 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Backup files
+*.backup
+*~
+
+# Sensitive files
+*.key
+*.pem
+credentials*
+.env

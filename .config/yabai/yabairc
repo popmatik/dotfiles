@@ -1,0 +1,86 @@
+#!/usr/bin/env sh
+
+# Load scripting addition
+sudo yabai --load-sa
+yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
+# default layout (can be bsp, stack or float)
+yabai -m config layout bsp
+
+# When splitting, make the *first child* take more of the screen
+yabai -m config split_ratio 0.62
+
+# Optional: insert new windows as second child (bottom/right depending on split)
+yabai -m config window_placement second_child
+
+# New window spawns to the right if vertical split, or bottom if horizontal split
+yabai -m config window_placement second_child
+
+# Window opacity
+yabai -m config window_opacity on
+yabai -m config window_opacity_duration 0.1 
+yabai -m config active_window_opacity 1.0
+yabai -m config normal_window_opacity 0.8
+yabai -m config window_animation_duration 0.0
+ 
+# padding set to 12px
+yabai -m config top_padding 52 
+yabai -m config bottom_padding 16
+yabai -m config left_padding 16 
+yabai -m config right_padding 16 
+yabai -m config window_gap 20 
+
+# modifier for clicking and dragging with mouse
+#yabai -m config mouse_modifier alt
+# set modifier + left-click drag to move window
+yabai -m config mouse_action1 move
+# set modifier + right-click drag to resize window
+yabai -m config mouse_action2 resize
+
+
+# when window is dropped in center of another window, swap them (on edges it will split it)
+yabai -m mouse_drop_action swap
+
+#
+# setup spaces
+#
+for _ in $(yabai -m query --spaces | jq '.[].index | select(. > 5)'); do
+  yabai -m space --destroy 6
+done
+
+function setup_space {
+  local idx="$1"
+  local name="$2"
+  local space=
+  echo "setup space $idx : $name"
+
+  space=$(yabai -m query --spaces --space "$idx")
+  if [ -z "$space" ]; then
+    yabai -m space --create
+  fi
+
+  yabai -m space "$idx" --label "$name"
+}
+
+setup_space 1 code
+setup_space 2 browse
+setup_space 3 chatter
+setup_space 4 music
+setup_space 5 mix
+
+yabai -m rule --add app="^System Settings$" manage=off
+yabai -m rule --add app="^Calculator$" manage=off
+yabai -m rule --add app="^Around$" manage=off
+borders active_color=0xffcba6f7 inactive_color=0xff313244 width=8.0
+
+yabai -m rule --add subrole="AXDialog" manage=off
+yabai -m rule --add subrole="AXSystemDialog" manage=off  
+yabai -m rule --add subrole="AXFloatingWindow" manage=off
+
+# Put Ghostty in space 1
+yabai -m rule --add app="^Ghostty$" space=1
+yabai -m rule --add app="^Brave$" space=1
+
+# (Optional) make sure they're managed
+yabai -m rule --add app="^Ghostty$" manage=on
+yabai -m rule --add app="^Brave$" manage=on
+

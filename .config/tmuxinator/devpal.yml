@@ -1,0 +1,11 @@
+# /Users/robleach/.config/tmuxinator/dev.yml
+
+name: Devpal 
+root: ~/sites/dev-pal/
+
+windows:
+  - Code:
+    - nvim .
+  - GitShit:
+  - Frontend:
+    - bun run dev

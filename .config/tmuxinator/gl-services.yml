@@ -1,0 +1,10 @@
+# /Users/robleach/.config/tmuxinator/dev.yml
+
+name: gl-services
+root: ~/sites/gl-services/
+
+windows:
+  - Code:
+    - nvim .
+  - GitShit:
+  - Server:

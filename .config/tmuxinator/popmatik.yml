@@ -1,0 +1,11 @@
+# /Users/robleach/.config/tmuxinator/dev.yml
+
+name: popmatik 
+root: ~/sites/popmatik/
+
+windows:
+  - Code:
+    - nvim .
+  - GitShit:
+  - Server:
+    - npm run dev

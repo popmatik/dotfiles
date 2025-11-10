@@ -26,8 +26,9 @@ Personal configuration files for macOS.
 git clone https://github.com/YOUR_USERNAME/dotfiles.git ~/dotfiles
 ```
 
-2. Create symlinks (this uses the dotfiles and links them to `~/.config`):
+2. Create symlinks:
 ```bash
+# Config files in ~/.config/
 ln -s ~/dotfiles/.config/nvim ~/.config/nvim
 ln -s ~/dotfiles/.config/sketchybar ~/.config/sketchybar
 ln -s ~/dotfiles/.config/skhd ~/.config/skhd
@@ -35,6 +36,9 @@ ln -s ~/dotfiles/.config/tmux ~/.config/tmux
 ln -s ~/dotfiles/.config/tmuxinator ~/.config/tmuxinator
 ln -s ~/dotfiles/.config/yabai ~/.config/yabai
 ln -s ~/dotfiles/.config/starship.toml ~/.config/starship.toml
+
+# Config files in ~/
+ln -s ~/dotfiles/.tmux.conf ~/.tmux.conf
 ```
 
 3. Restart relevant services as needed.

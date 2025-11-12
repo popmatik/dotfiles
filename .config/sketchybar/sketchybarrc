@@ -53,8 +53,8 @@ sketchybar --animate sin 20
 # https://felixkratz.github.io/SketchyBar/config/items
 
 default=(
-  padding_left=5
-  padding_right=5
+  padding_left=4
+  padding_right=4
   icon.font="Inconsolata Nerd Font:Bold:17.0"
   label.font="Inconsolata Nerd Font:Normal:16.0"
   icon.color=0xffffffff
@@ -115,21 +115,21 @@ sketchybar --add item chevron left \
 sketchybar --add item clock right \
            --set clock update_freq=10 icon=  script="$PLUGIN_DIR/clock.sh" width=100 \
            --add item separator1 right \
-           --set separator1 icon="|" icon.color=$OVERLAY0 padding_left=5 padding_right=5 label.drawing=off \
+           --set separator1 icon="|" icon.color=$OVERLAY0 padding_left=4 padding_right=4 label.drawing=off \
            --add item volume right \
            --set volume script="$PLUGIN_DIR/volume.sh" \
            --subscribe volume volume_change \
            --add item separator2 right \
-           --set separator2 icon="|" icon.color=$OVERLAY0 padding_left=5 padding_right=5 label.drawing=off \
+           --set separator2 icon="|" icon.color=$OVERLAY0 padding_left=4 padding_right=4 label.drawing=off \
            --add item battery right \
            --set battery update_freq=120 script="$PLUGIN_DIR/battery.sh" \
            --subscribe battery system_woke power_source_change \
            --add item separator3 right \
-           --set separator3 icon="|" icon.color=$OVERLAY0 padding_left=5 padding_right=5 label.drawing=off \
+           --set separator3 icon="|" icon.color=$OVERLAY0 padding_left=4 padding_right=4 label.drawing=off \
            --add item spotify right \
            --set spotify update_freq=1 icon=  script="$PLUGIN_DIR/spotify.sh" \
            --add item separator4 right \
-           --set separator4 icon="|" icon.color=$OVERLAY0 padding_left=5 padding_right=5 label.drawing=off \
+           --set separator4 icon="|" icon.color=$OVERLAY0 padding_left=4 padding_right=4 label.drawing=off \
            --add item vpn right \
            --set vpn update_freq=2 script="$PLUGIN_DIR/protonvpn.sh"
 

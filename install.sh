@@ -15,7 +15,12 @@ step() { printf '\n==> %s\n' "$*"; }
 
 # link <path in repo> <destination>
 link() {
-  local src="$DOTFILES/$1" dest="$2"
+  link_abs "$DOTFILES/$1" "$2"
+}
+
+# link_abs <absolute source> <destination>
+link_abs() {
+  local src="$1" dest="$2"
   [[ -L $dest && $(readlink "$dest") == "$src" ]] && return
   if [[ -e $dest || -L $dest ]]; then
     mv "$dest" "$dest.backup.$(date +%Y%m%d%H%M%S)"
@@ -38,7 +43,10 @@ if ! $SKIP_BREW; then
   if ! command -v brew >/dev/null; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   fi
-  eval "$(/opt/homebrew/bin/brew shellenv)"
+  # Apple Silicon, then Intel.
+  for brew_bin in /opt/homebrew/bin/brew /usr/local/bin/brew; do
+    [[ -x $brew_bin ]] && { eval "$("$brew_bin" shellenv)"; break; }
+  done
   brew bundle install --no-upgrade --file "$DOTFILES/Brewfile" ||
     echo "  some Brewfile entries failed; see above (re-run once fixed)"
 fi
@@ -81,7 +89,7 @@ if [[ ! -L $HOME/.local/state/theme/current ]]; then
   "$DOTFILES/bin/theme" catppuccin-mocha
 fi
 # starship reads the config `theme` generates.
-ln -sfn "$HOME/.local/state/theme/starship.toml" "$HOME/.config/starship.toml"
+link_abs "$HOME/.local/state/theme/starship.toml" "$HOME/.config/starship.toml"
 if ! find "$DOTFILES/themes" -path '*/backgrounds/*' -type f -print -quit | grep -q .; then
   "$DOTFILES/bin/theme" --fetch-backgrounds
 fi

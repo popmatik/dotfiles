@@ -26,7 +26,7 @@ local function apply()
   -- You can configure highlights by doing something like:
   vim.cmd.hi 'Comment gui=none'
   for group, hl in pairs(theme.highlights or {}) do
-    vim.api.nvim_set_hl(0, group, vim.tbl_extend('force', vim.api.nvim_get_hl(0, { name = group }), hl))
+    vim.api.nvim_set_hl(0, group, vim.tbl_extend('force', vim.api.nvim_get_hl(0, { name = group, link = false }), hl))
   end
 
   -- On a live switch lualine is already running; re-setup it with the new theme.

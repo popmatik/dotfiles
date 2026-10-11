@@ -15,7 +15,8 @@
 
 set -euo pipefail
 
-DOTFILES="$HOME/dotfiles"
+# The repo this script lives in, wherever it was cloned.
+DOTFILES="$(cd "$(dirname "$(realpath "${BASH_SOURCE[0]}")")/.." && pwd)"
 THEMES="$DOTFILES/themes"
 STATE="$HOME/.local/state/theme"
 CURRENT="$STATE/current"
@@ -56,6 +57,8 @@ pick() {
 # Wallpapers live in themes/<name>/backgrounds/ (gitignored; see --fetch-backgrounds).
 # The one last used per theme is remembered in $STATE/backgrounds/<name>.
 backgrounds() {
+  # Not fetched yet: no backgrounds rather than a failure (pipefail would abort the caller).
+  [[ -d $CURRENT/backgrounds ]] || return 0
   find -L "$CURRENT/backgrounds/" -maxdepth 1 -type f \
     \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' -o -iname '*.heic' \) \
     2>/dev/null | sort
@@ -70,6 +73,8 @@ set_wallpaper() {
 import datetime, pathlib, plistlib, sys
 
 store, url = pathlib.Path(sys.argv[1]), pathlib.Path(sys.argv[2]).resolve().as_uri()
+if not store.is_file():
+    sys.exit(1)
 data = plistlib.loads(store.read_bytes())
 IMAGE = 'com.apple.wallpaper.choice.image'
 

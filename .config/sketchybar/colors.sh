@@ -6,5 +6,6 @@ THEME_COLORS="$HOME/.local/state/theme/current/sketchybar.sh"
 if [ -f "$THEME_COLORS" ]; then
   . "$THEME_COLORS"
 else
-  . "$HOME/dotfiles/themes/catppuccin-mocha/sketchybar.sh"
+  # CONFIG_DIR links into the dotfiles repo; its themes/ sits two levels up.
+  . "$(cd "$CONFIG_DIR" && pwd -P)/../../themes/catppuccin-mocha/sketchybar.sh"
 fi

@@ -12,3 +12,5 @@
 *.pem
 credentials*
 .env
+.navidrome.env
+*.navidrome.env

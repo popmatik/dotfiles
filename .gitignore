@@ -14,3 +14,6 @@ credentials*
 .env
 .navidrome.env
 *.navidrome.env
+
+# Theme wallpapers are fetched from Omarchy (theme --fetch-backgrounds), not committed
+themes/*/backgrounds/

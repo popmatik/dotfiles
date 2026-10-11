@@ -60,6 +60,11 @@ theme catppuccin-mocha
 - `sketchybar.sh` - bar colours, loaded by `.config/sketchybar/colors.sh` (bar reloads on switch)
 - `borders` - JankyBorders colours, used by yabairc and pushed to the running instance
 
+- `backgrounds/` - wallpapers (gitignored). `theme --fetch-backgrounds` downloads Omarchy's,
+  minus the Omarchy-branded ones; `theme --next-bg` cycles them and each theme remembers its pick.
+  macOS only changes the current Space's wallpaper unless System Settings > Wallpaper >
+  "Show on all Spaces" is on.
+
 The active theme is the symlink `~/.local/state/theme/current`. To add a theme, copy a folder
 and change the colours.
 

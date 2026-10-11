@@ -102,7 +102,7 @@ cat <<'EOF'
 
 Done. Still to do by hand:
   - Fill in ~/.zshrc.secrets (keep a copy somewhere safe, such as 1Password).
-  - Install herdr into ~/.local/bin, then: herdr plugin link ~/.claude/herdr-plugins/worktree-setup
+  - Link the herdr plugin: herdr plugin link ~/.claude/herdr-plugins/worktree-setup
   - Grant Accessibility to yabai and skhd (System Settings > Privacy & Security > Accessibility).
   - yabai's scripting addition (used to focus Spaces) needs SIP partly disabled; see the yabai wiki.
   - Allow your terminal to control Ghostty the first time `theme` asks.

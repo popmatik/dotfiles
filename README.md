@@ -31,8 +31,8 @@ wallpapers, installs tmux and nvim plugins, and starts sketchybar, yabai and skh
 re-run; anything already in the way is moved aside to `<name>.backup.<timestamp>`. Use
 `--skip-brew` to skip Homebrew.
 
-It finishes with the steps that can't be scripted: filling in `~/.zshrc.secrets`, installing
-herdr, macOS Accessibility permissions for yabai and skhd, and yabai's scripting addition (needs
+It finishes with the steps that can't be scripted: filling in `~/.zshrc.secrets`, linking the
+herdr plugin, macOS Accessibility permissions for yabai and skhd, and yabai's scripting addition (needs
 SIP partly disabled).
 
 To refresh the Brewfile after installing things:

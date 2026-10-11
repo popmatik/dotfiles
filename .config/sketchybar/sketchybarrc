@@ -101,12 +101,15 @@ sketchybar --add item clock right \
            --subscribe battery system_woke power_source_change \
            --add item separator3 right \
            --set separator3 icon="|" icon.color=$OVERLAY0 padding_left=4 padding_right=4 label.drawing=off \
-           # --add item navidrome right \
-           # --set navidrome update_freq=1 icon=󰎈 script="$PLUGIN_DIR/navidrome.sh" \
            --add item separator4 right \
            --set separator4 icon="|" icon.color=$OVERLAY0 padding_left=4 padding_right=4 label.drawing=off \
            --add item vpn right \
            --set vpn update_freq=2 script="$PLUGIN_DIR/protonvpn.sh"
+
+# Navidrome now playing (disabled). It can't be commented out inside the chain above:
+# a comment ends a \-continued command. To enable, uncomment:
+# sketchybar --add item navidrome right \
+#            --set navidrome update_freq=1 icon=󰎈 script="$PLUGIN_DIR/navidrome.sh"
 
 ##### Force all scripts to run the first time (never do this in a script) #####
 sketchybar --update

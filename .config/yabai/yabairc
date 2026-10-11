@@ -70,7 +70,8 @@ setup_space 5 mix
 yabai -m rule --add app="^System Settings$" manage=off
 yabai -m rule --add app="^Calculator$" manage=off
 yabai -m rule --add app="^Around$" manage=off
-borders active_color=0xffcba6f7 inactive_color=0xff313244 width=8.0
+# Border colours come from the active theme (~/dotfiles/bin/theme); mocha if none is set.
+borders $(cat ~/.local/state/theme/current/borders 2>/dev/null || echo active_color=0xffcba6f7 inactive_color=0xff313244) width=8.0
 
 yabai -m rule --add subrole="AXDialog" manage=off
 yabai -m rule --add subrole="AXSystemDialog" manage=off  

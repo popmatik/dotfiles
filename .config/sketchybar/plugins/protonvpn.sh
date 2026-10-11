@@ -1,7 +1,6 @@
 #!/bin/bash
 
-RED=0xfff38ba8
-GREEN=0xffa6e3a1
+source "$CONFIG_DIR/colors.sh"
 
 # Check ProtonVPN connection status via scutil
 if scutil --nc list | grep "ProtonVPN" | grep -q "Connected"; then

@@ -4,6 +4,7 @@ Personal configuration files for macOS.
 
 ## What's Included
 
+- **ghostty** - Terminal
 - **nvim** - Neovim configuration
 - **sketchybar** - Custom macOS menu bar
 - **skhd** - Hotkey daemon
@@ -29,6 +30,7 @@ git clone https://github.com/YOUR_USERNAME/dotfiles.git ~/dotfiles
 2. Create symlinks:
 ```bash
 # Config files in ~/.config/
+ln -s ~/dotfiles/.config/ghostty ~/.config/ghostty
 ln -s ~/dotfiles/.config/nvim ~/.config/nvim
 ln -s ~/dotfiles/.config/sketchybar ~/.config/sketchybar
 ln -s ~/dotfiles/.config/skhd ~/.config/skhd
@@ -53,7 +55,7 @@ theme catppuccin-mocha
 `theme` switches colours everywhere at once; run it with no arguments for an fzf picker, or
 `theme <name>`. Themes are folders in `themes/`, each with:
 
-- `ghostty.conf` - included by Ghostty's config (`config-file = ?"~/.local/state/theme/current/ghostty.conf"`); herdr uses the terminal palette, so it follows
+- `ghostty.conf` - included by `.config/ghostty/config`; herdr uses the terminal palette, so it follows
 - `tmux.conf` - `@thm_*` colours, sourced before the catppuccin tmux plugin
 - `nvim.lua` - colorscheme, lualine theme and highlight overrides; running nvims re-apply on `SIGUSR1`
 - `starship.toml` - a `[palettes.theme]` block appended to `.config/starship.toml`

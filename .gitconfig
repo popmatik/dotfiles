@@ -1,0 +1,27 @@
+# This is Git's per-user configuration file.
+[user]
+	email = rob@popmatik.com
+	name = Rob Leach
+# Please adapt and uncomment the following lines:
+#	name = Rob Leach
+#	email = robleach@Robs-MacBook-Pro-2.local
+[push]
+	default = simple
+[core]
+    pager = delta
+
+[interactive]
+    diffFilter = delta --color-only
+
+[include]
+    path = ~/delta/catppuccin.gitconfig
+[delta]
+    navigate = true  # use n and N to move between diff sections
+    dark = true      # or light = true, or omit for auto-detection
+    features = catppuccin-mocha
+    side-by-side = true
+    line-numbers-left-format = ""
+    line-numbers-right-format = "│ "
+
+[merge]
+    conflictstyle = zdiff3

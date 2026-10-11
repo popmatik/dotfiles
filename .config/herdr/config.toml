@@ -1,0 +1,22 @@
+onboarding = false
+
+# Keybindings: herdr defaults (ctrl+b prefix) — learning them before customising.
+
+[theme]
+# Inherit Ghostty's colours.
+name = "terminal"
+
+# Worktrees stay in the sibling ~/sites/<repo>-worktrees/<branch> layout; our tooling passes
+# --path explicitly, so worktrees.directory is left at herdr's default.
+
+[ui]
+# Attention queue: blocked/done agents float to the top across all repos.
+agent_panel_sort = "priority"
+
+[ui.sound]
+# Visual alerts only.
+enabled = false
+
+[ui.toast]
+# macOS notification when a background agent finishes or needs input.
+delivery = "system"

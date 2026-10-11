@@ -101,8 +101,6 @@ sketchybar --add item clock right \
            --subscribe battery system_woke power_source_change \
            --add item separator3 right \
            --set separator3 icon="|" icon.color=$OVERLAY0 padding_left=4 padding_right=4 label.drawing=off \
-           --add item separator4 right \
-           --set separator4 icon="|" icon.color=$OVERLAY0 padding_left=4 padding_right=4 label.drawing=off \
            --add item vpn right \
            --set vpn update_freq=2 script="$PLUGIN_DIR/protonvpn.sh"
 

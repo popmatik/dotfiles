@@ -1,0 +1,11 @@
+# /Users/robleach/.config/tmuxinator/dev.yml
+
+name: gl-frontend
+root: ~/sites/gl-frontend/
+
+windows:
+  - Code:
+    - nvim .
+  - GitShit:
+  - Server:
+    - npm run dev

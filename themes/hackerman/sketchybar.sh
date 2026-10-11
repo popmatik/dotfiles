@@ -1,0 +1,27 @@
+# sketchybar colours (0xAARRGGBB), sourced via .config/sketchybar/colors.sh
+BASE=0xff0b0c16
+TEXT=0xffddf7ff
+ROSEWATER=0xff50f7a3
+FLAMINGO=0xff50f7a3
+PINK=0xff86a7df
+MAUVE=0xff82fb9c
+RED=0xff50f872
+MAROON=0xff85ff9d
+PEACH=0xff50f7a3
+YELLOW=0xff50f7d4
+GREEN=0xff4fe88f
+TEAL=0xff7cf8f7
+SKY=0xffd1fffe
+SAPPHIRE=0xff829dd4
+BLUE=0xff829dd4
+LAVENDER=0xffcddbf4
+SUBTEXT1=0xffb5c5db
+SUBTEXT0=0xffb5c5db
+OVERLAY2=0xff6a6e95
+OVERLAY1=0xff2d3450
+OVERLAY0=0xff2d3450
+SURFACE2=0xff2d3450
+SURFACE1=0xff1f253a
+SURFACE0=0xff151828
+MANTLE=0xff080910
+CRUST=0xff06060c

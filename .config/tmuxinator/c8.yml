@@ -46,7 +46,6 @@ root: ~/sites/canvas/
 
 windows:
   - Code:
-    - cursor . -r
     - nvim .
   - GitShit:
   - Frontend:

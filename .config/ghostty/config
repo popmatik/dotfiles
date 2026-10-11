@@ -1,0 +1,25 @@
+font-family = "JetBrains Mono"
+window-decoration = true
+macos-titlebar-style = hidden
+macos-titlebar-proxy-icon = hidden
+font-thicken = false
+font-size=22
+# === Color Theme ===
+config-file = ?"~/.local/state/theme/current/ghostty.conf"
+window-padding-x=12
+window-padding-y=12
+adjust-cell-height=10%
+adjust-cell-width = "-10%"
+keybind = cmd+t=text:\x02c
+keybind = cmd+w=text:\x02x
+ 
+keybind = cmd+;=text:\x02:
+keybind = cmd+digit_1=text:\x021
+keybind = cmd+digit_2=text:\x022
+keybind = cmd+digit_3=text:\x023
+keybind = cmd+digit_4=text:\x024
+keybind = cmd+digit_5=text:\x025
+keybind = cmd+digit_6=text:\x026
+keybind = cmd+digit_7=text:\x027
+keybind = cmd+digit_8=text:\x028
+keybind = cmd+digit_9=text:\x029

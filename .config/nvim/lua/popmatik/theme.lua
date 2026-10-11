@@ -13,6 +13,10 @@ end
 local function apply()
   local theme = read_theme()
   vim.g.popmatik_lualine_theme = theme.lualine or 'auto'
+  vim.o.background = theme.background or 'dark'
+  if theme.setup then
+    pcall(theme.setup)
+  end
 
   if not pcall(vim.cmd.colorscheme, theme.colorscheme) then
     vim.notify('theme: colorscheme ' .. theme.colorscheme .. ' not found', vim.log.levels.WARN)
@@ -44,6 +48,12 @@ vim.api.nvim_create_autocmd('Signal', {
 return {
   { 'rose-pine/neovim', name = 'rose-pine', lazy = true },
   { 'gbprod/nord.nvim', lazy = true },
+  { 'ellisonleao/gruvbox.nvim', lazy = true },
+  { 'bjarneo/hackerman.nvim', lazy = true, dependencies = { 'bjarneo/aether.nvim' } },
+  { 'neanias/everforest-nvim', lazy = true },
+  { 'loctvl842/monokai-pro.nvim', lazy = true },
+  { 'OldJobobo/retro-82.nvim', lazy = true },
+  { 'folke/tokyonight.nvim', lazy = true },
   {
     'catppuccin/nvim',
     priority = 1000, -- Make sure to load this before all the other start plugins.

@@ -62,8 +62,9 @@ theme catppuccin-mocha
 
 - `backgrounds/` - wallpapers (gitignored). `theme --fetch-backgrounds` downloads Omarchy's,
   minus the Omarchy-branded ones; `theme --next-bg` cycles them and each theme remembers its pick.
-  macOS only changes the current Space's wallpaper unless System Settings > Wallpaper >
-  "Show on all Spaces" is on.
+  It's set on every Space by writing macOS's wallpaper store
+  (`~/Library/Application Support/com.apple.wallpaper/Store/Index.plist`) and restarting
+  WallpaperAgent, since AppleScript only reaches the current Space.
 
 The active theme is the symlink `~/.local/state/theme/current`. To add a theme, copy a folder
 and change the colours.

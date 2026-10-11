@@ -61,11 +61,48 @@ backgrounds() {
     2>/dev/null | sort
 }
 
-# macOS sets the picture for the current Space only, unless System Settings > Wallpaper >
-# "Show on all Spaces" is on.
+# AppleScript only reaches the current Space, so the picture is written into every Space's entry
+# in macOS's wallpaper store instead, and WallpaperAgent is restarted to pick it up.
+WALLPAPER_STORE="$HOME/Library/Application Support/com.apple.wallpaper/Store/Index.plist"
+
 set_wallpaper() {
-  osascript -e "tell application \"System Events\" to tell every desktop to set picture to POSIX file \"$1\"" \
-    >/dev/null 2>&1 || echo "theme: couldn't set the wallpaper" >&2
+  if ! python3 -I - "$WALLPAPER_STORE" "$1" <<'EOF'
+import datetime, pathlib, plistlib, sys
+
+store, url = pathlib.Path(sys.argv[1]), pathlib.Path(sys.argv[2]).resolve().as_uri()
+data = plistlib.loads(store.read_bytes())
+IMAGE = 'com.apple.wallpaper.choice.image'
+
+entries = []
+for space in (data.get('Spaces') or {}).values():
+    entries.append(space.get('Default'))
+    entries += (space.get('Displays') or {}).values()
+entries += (data.get('Displays') or {}).values()
+desktops = [e['Desktop'] for e in entries if isinstance(e, dict) and isinstance(e.get('Desktop'), dict)]
+
+# Spaces on a dynamic wallpaper get an image choice built from an existing one.
+template = next((c for d in desktops for c in d['Content']['Choices'] if c.get('Provider') == IMAGE), None)
+for desktop in desktops:
+    choices = desktop['Content']['Choices']
+    images = [c for c in choices if c.get('Provider') == IMAGE]
+    if not images and template:
+        images = [dict(template)]
+        desktop['Content']['Choices'] = images
+    for choice in images:
+        choice['Files'] = [{'relative': url}]
+    desktop['LastSet'] = datetime.datetime.now()
+
+if not desktops:
+    sys.exit(1)
+store.write_bytes(plistlib.dumps(data, fmt=plistlib.FMT_BINARY))
+EOF
+  then
+    # No store entries yet (fresh machine): fall back to the current Space only.
+    osascript -e "tell application \"System Events\" to tell every desktop to set picture to POSIX file \"$1\"" \
+      >/dev/null 2>&1 || echo "theme: couldn't set the wallpaper" >&2
+    return
+  fi
+  killall WallpaperAgent 2>/dev/null || true
 }
 
 set_background() {

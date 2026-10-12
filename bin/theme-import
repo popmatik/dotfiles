@@ -1,0 +1,134 @@
+#!/usr/bin/env python3
+"""theme-import — build themes/<name>/ from an Omarchy theme's colors.toml.
+
+  theme-import --list                    list Omarchy's themes
+  theme-import <omarchy-theme> [name]    import one (as <name> if given)
+  theme-import --from <dir> ...          use a local Omarchy checkout instead of cloning
+
+Writes ghostty.conf, tmux.conf, starship.toml, sketchybar.sh, borders and nvim.lua. Existing
+themes are left alone unless --force is given. Wallpapers come separately: theme --fetch-backgrounds.
+"""
+import argparse, pathlib, re, subprocess, sys, tempfile, tomllib
+
+DOTFILES = pathlib.Path(__file__).resolve().parent.parent
+THEMES = DOTFILES / 'themes'
+THEME_LUA = DOTFILES / '.config/nvim/lua/popmatik/theme.lua'
+OMARCHY = 'https://github.com/omacom/omarchy'
+
+ANSI = ['background', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'foreground',
+        'muted', 'bright_red', 'bright_green', 'bright_yellow', 'bright_blue', 'bright_magenta',
+        'bright_cyan', 'bright_foreground']
+
+# Catppuccin-named slots shared by tmux, starship and sketchybar. `mauve` is the accent.
+SLOTS = {
+  'rosewater': 'orange', 'flamingo': 'orange', 'pink': 'magenta', 'mauve': 'accent',
+  'red': 'red', 'maroon': 'bright_red', 'peach': 'orange', 'yellow': 'yellow',
+  'green': 'green', 'teal': 'cyan', 'sky': 'bright_cyan', 'sapphire': 'blue',
+  'blue': 'blue', 'lavender': 'bright_magenta',
+}
+SURFACES = {
+  'subtext1': 'light_foreground', 'subtext0': 'light_foreground', 'overlay2': 'dark_foreground',
+  'overlay1': 'muted', 'overlay0': 'muted', 'surface2': 'muted', 'surface1': 'selection',
+  'surface0': 'lighter_background', 'base': 'background', 'mantle': 'dark_background',
+  'crust': 'darker_background',
+}
+TMUX_NAME = {'subtext1': 'subtext_1', 'subtext0': 'subtext_0', 'overlay2': 'overlay_2',
+             'overlay1': 'overlay_1', 'overlay0': 'overlay_0', 'surface2': 'surface_2',
+             'surface1': 'surface_1', 'surface0': 'surface_0'}
+
+
+def read_colors(path):
+  raw = tomllib.loads(path.read_text())
+  c = {k: v.lower() for k, v in raw.items() if isinstance(v, str) and v.startswith('#')}
+  c.setdefault('orange', c['yellow'])  # not every theme has one
+  return c, raw.get('mode', 'dark')
+
+
+def nvim_lua(src, mode):
+  """nvim.lua for popmatik/theme.lua, from Omarchy's LazyVim-style neovim.lua."""
+  spec = src / 'neovim.lua'
+  text = spec.read_text() if spec.is_file() else ''
+  scheme = re.search(r'colorscheme\s*=\s*"([^"]+)"', text)
+  plugin = re.search(r'\{\s*"([\w.-]+/[\w.-]+)"', text)
+  lines = ['return {', f"  colorscheme = '{scheme[1] if scheme else 'default'}',", "  lualine = 'auto',"]
+  if mode == 'light':
+    lines.append("  background = 'light',")
+  lines.append('}')
+  return '\n'.join(lines) + '\n', plugin[1] if plugin else None, bool(scheme)
+
+
+def build(c, mode, dest, nvim):
+  g = [f"background = {c['background']}", f"foreground = {c['foreground']}",
+       f"cursor-color = {c['bright_foreground']}",
+       f"selection-background = {c['selection']}", f"selection-foreground = {c['foreground']}", '']
+  g += [f'palette = {i}={c[k]}' for i, k in enumerate(ANSI)]
+  (dest / 'ghostty.conf').write_text("# Palette from Omarchy's colors.toml\n" + '\n'.join(g) + '\n')
+
+  t = ['# tmux colours, read by the catppuccin plugin (sourced before it loads)',
+       f'set -g @thm_bg "{c["background"]}"', f'set -g @thm_fg "{c["foreground"]}"']
+  t += [f'set -g @thm_{k} "{c[v]}"' for k, v in SLOTS.items()]
+  t += [f'set -g @thm_{TMUX_NAME.get(k, k)} "{c[v]}"' for k, v in SURFACES.items() if k != 'base']
+  (dest / 'tmux.conf').write_text('\n'.join(t) + '\n')
+
+  sp = ['[palettes.theme]', f'text = "{c["foreground"]}"']
+  sp += [f'{k} = "{c[v]}"' for k, v in {**SLOTS, **SURFACES}.items()]
+  (dest / 'starship.toml').write_text('\n'.join(sp) + '\n')
+
+  sb = ['# sketchybar colours (0xAARRGGBB), sourced via .config/sketchybar/colors.sh',
+        f"BASE=0xff{c['background'][1:]}", f"TEXT=0xff{c['foreground'][1:]}"]
+  sb += [f'{k.upper()}=0xff{c[v][1:]}' for k, v in {**SLOTS, **SURFACES}.items() if k != 'base']
+  (dest / 'sketchybar.sh').write_text('\n'.join(sb) + '\n')
+
+  (dest / 'borders').write_text(
+    f"active_color=0xff{c['accent'][1:]} inactive_color=0xff{c['lighter_background'][1:]}\n")
+  (dest / 'nvim.lua').write_text(nvim)
+
+
+def clone(tmp):
+  repo = pathlib.Path(tmp) / 'omarchy'
+  subprocess.run(['git', 'clone', '-q', '--depth', '1', '--filter=blob:none', '--sparse', OMARCHY, repo], check=True)
+  subprocess.run(['git', '-C', repo, 'sparse-checkout', 'set', '--no-cone',
+                  '/themes/*/colors.toml', '/themes/*/neovim.lua'], check=True)
+  return repo
+
+
+def main():
+  p = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+  p.add_argument('theme', nargs='?', help="Omarchy theme name, e.g. kanagawa")
+  p.add_argument('name', nargs='?', help='name under themes/ (default: the Omarchy name)')
+  p.add_argument('--list', action='store_true', help="list Omarchy's themes")
+  p.add_argument('--from', dest='src', type=pathlib.Path, help='local Omarchy checkout')
+  p.add_argument('--force', action='store_true', help='overwrite an existing theme')
+  args = p.parse_args()
+  if not args.list and not args.theme:
+    p.error('give a theme name, or --list')
+
+  with tempfile.TemporaryDirectory() as tmp:
+    repo = args.src or clone(tmp)
+    available = sorted(d.parent.name for d in (repo / 'themes').glob('*/colors.toml'))
+    if args.list:
+      print('\n'.join(f"{n}{'  (installed)' if (THEMES / n).is_dir() else ''}" for n in available))
+      return
+
+    src = repo / 'themes' / args.theme
+    if not (src / 'colors.toml').is_file():
+      sys.exit(f"theme-import: Omarchy has no theme '{args.theme}' (try: theme-import --list)")
+    dest = THEMES / (args.name or args.theme)
+    if dest.exists() and not args.force:
+      sys.exit(f'theme-import: {dest} exists (use --force to overwrite)')
+
+    colors, mode = read_colors(src / 'colors.toml')
+    nvim, plugin, found = nvim_lua(src, mode)
+    dest.mkdir(parents=True, exist_ok=True)
+    build(colors, mode, dest, nvim)
+
+  print(f'imported {args.theme} -> {dest.relative_to(DOTFILES)}')
+  if not found:
+    print(f"  nvim: Omarchy has no colorscheme for it; set one in {dest.name}/nvim.lua")
+  elif plugin and plugin not in THEME_LUA.read_text():
+    print(f"  nvim: add {{ '{plugin}', lazy = true }} to {THEME_LUA.relative_to(DOTFILES)}")
+  print(f'  wallpapers: theme --fetch-backgrounds, then: theme {dest.name}')
+
+
+if __name__ == '__main__':
+  main()

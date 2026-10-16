@@ -17,6 +17,7 @@ Personal configuration files for macOS.
 - **git** - `.gitconfig` (delta, catppuccin), `.ripgreprc`
 - **Brewfile** - everything Homebrew installs
 - **bin/theme** - theme switcher (below)
+- **bin/theme-import** - builds a theme from one of Omarchy's (below)
 
 ## New Mac
 
@@ -62,7 +63,16 @@ That drops the hand-added block at the bottom (taps `brew bundle dump` misses), 
   WallpaperAgent, since AppleScript only reaches the current Space.
 
 The active theme is the symlink `~/.local/state/theme/current`. To add a theme, copy a folder
-and change the colours.
+and change the colours, or import one of Omarchy's:
+
+```sh
+theme-import --list        # Omarchy's themes, marking those already here
+theme-import kanagawa      # writes themes/kanagawa/ from its colors.toml
+```
+
+It maps Omarchy's `colors.toml` onto the slots above (`mauve` is the accent) and takes the
+colorscheme from its `neovim.lua`. The nvim lualine theme defaults to `auto`, so check `nvim.lua`;
+if the colorscheme's plugin isn't in `.config/nvim/lua/popmatik/theme.lua` yet, it says what to add.
 
 ## How It Works
 
